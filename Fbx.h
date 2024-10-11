@@ -68,5 +68,5 @@ public:
 	HRESULT Load(std::string fileName);
 	void    Draw(Transform& transform);
 	void    Release();
-	void    RayCast(RayCastDeta& rayDate);
+	void    RayCast(RayCastDeta& rayDate, Transform& transform);
 };

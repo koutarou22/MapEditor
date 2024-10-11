@@ -42,11 +42,15 @@ void Stage::Initialize()
 
 void Stage::Update()
 {
-    RayCastDeta data;
-    data.start = XMFLOAT4(-5, 5, 0, 0);
-    data.dir = XMFLOAT4(0, -1, 0, 0);
-    pFbx[0]->RayCast(data);
+    //RayCastDeta data;
+    //data.start = XMFLOAT4(100, 5, 0, 0);
+    //data.dir = XMFLOAT4(0, -1, 0, 0);
 
+    //Transform trans;
+    //trans.position_.x = 1;
+
+    ////あくまでFBXのレイキャストなので
+    //pFbx[0]->RayCast(data, trans);
 
     if (Input::IsMouseButtonDown(0))
     {
@@ -80,9 +84,24 @@ void Stage::Update()
         XMVECTOR mouseBackPos = XMLoadFloat3(&mousePos);//カメラから見える範囲で一番後ろの面を取得
         //ここで変換する(前)
         mouseFrontPos = XMVector3TransformCoord(mouseFrontPos, invVP * invProj * invView);
-
         //ここで行列をする(後)
         mouseBackPos = XMVector3TransformCoord(mouseBackPos, invVP * invProj * invView);
+
+        RayCastDeta data;
+        XMStoreFloat4(&data.start, mouseFrontPos);
+        XMStoreFloat4(&data.dir, mouseBackPos - mouseFrontPos);//向きの設定
+        data.dir = XMFLOAT4(0, -1, 0, 0);
+
+        Transform trans;
+      /*  trans.position_.x = 1;*/
+
+        //あくまでFBXのレイキャストなので
+        pFbx[0]->RayCast(data, trans);
+
+        if (data.hit == true)
+        {
+            PostQuitMessage(0);
+        }
     }
 }
 

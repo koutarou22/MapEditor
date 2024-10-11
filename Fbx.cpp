@@ -288,19 +288,41 @@ void FBX::Release()
 {
 }
 
-void FBX::RayCast(RayCastDeta& rayDate)
+void FBX::RayCast(RayCastDeta& rayDate, Transform& transform)
 {
+	transform.Calculation();
+	XMMATRIX invWorld = XMMatrixInverse(nullptr, transform.GetWorldMatrix());//逆行列
 	XMVECTOR start = XMLoadFloat4(&rayDate.start);
 	XMVECTOR dir = XMLoadFloat4(&rayDate.dir);
 	dir = XMVector3Normalize(dir);
 
+	XMVECTOR end = start + dir;//原点(ワールド)からstart+dir を足すことでend(終着点)を求めることができる
+
+	start = XMVector3TransformCoord(start, invWorld);
+	end = XMVector3TransformCoord(end, invWorld);
+	dir = end - start;//向きを変更させないために　終点から開始を後から引く
+
+	
+
 	for (int material = 0; material < materialCount_; material++)
 	{
 		for (int poly = 0; poly < indexCount_[material] / 3; poly++)
-		{//インデックスカウントを３で割る
-			XMVECTOR v0 = vertices[index[material][poly * 3]].position;
+		{
+			//インデックスカウントを３で割る
+			XMVECTOR v0 = vertices[index[material][poly * 3 + 0]].position;
 			XMVECTOR v1 = vertices[index[material][poly * 3 + 1]].position;
 			XMVECTOR v2 = vertices[index[material][poly * 3 + 2]].position;
+
+			
+
+			///---適切だがハイポリだと大変-------------------------------------
+
+			//当たり判定がずれないようにローカルからワールドに変換する必要がある
+			//v0 = XMVector3TransformCoord(v0, transform.GetWorldMatrix());
+			//v1 = XMVector3TransformCoord(v1, transform.GetWorldMatrix());
+			//v2 = XMVector3TransformCoord(v2, transform.GetWorldMatrix());
+			// 
+			//--------------------------------------------------------------
 
 			rayDate.hit = TriangleTests::Intersects(start, dir, v0, v1, v2, rayDate.dist);
 			if (rayDate.hit)
