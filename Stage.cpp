@@ -2,6 +2,7 @@
 #include"Input.h"
 #include"Camera.h"
 #include"Direct3D.h"
+#include "resource.h"
 
 Stage::Stage() : pFbx(), Width(20), Height(20)
 {
@@ -153,4 +154,53 @@ void Stage::Release()
         pFbx[i]->Release();
         SAFE_DELETE(pFbx[i]);
     }
+}
+
+//ダイアログプロシージャっぽい赤の他人
+BOOL Stage::DialogProc(HWND hDlg, UINT msg, WPARAM wp, LPARAM lp)
+{
+    int a = 0;
+    switch (msg)//何か処理をしたのならTRUEを返す
+    {
+    case WM_INITDIALOG:
+        /*HWND h = GetDlgItem(hDlg, IDC_RADIO_UP);*/
+        SendMessage(GetDlgItem(hDlg, IDC_RADIO_UP), BM_SETCHECK, BST_CHECKED, 0);
+
+        SendMessage(GetDlgItem(hDlg, IDC_COMBO3), CB_ADDSTRING, 0, (LPARAM)L"デフォルト");
+        SendMessage(GetDlgItem(hDlg, IDC_COMBO3), CB_ADDSTRING, 0, (LPARAM)L"レンガ");
+        SendMessage(GetDlgItem(hDlg, IDC_COMBO3), CB_ADDSTRING, 0, (LPARAM)L"草");
+        SendMessage(GetDlgItem(hDlg, IDC_COMBO3), CB_ADDSTRING, 0, (LPARAM)L"砂");
+        SendMessage(GetDlgItem(hDlg, IDC_COMBO3), CB_ADDSTRING, 0, (LPARAM)L"水");
+        break;
+
+        //case WM_MOUSEMOVE:
+        //      Input::SetMousePosition(LOWORD(lp), HIWORD(lp));
+        //      PostQuitMessage(0);
+        //      return 0;
+
+    case WM_COMMAND:
+        switch (LOWORD(wp))
+        {
+        case IDC_RADIO_UP:
+            break;
+
+        case IDC_RADIO_DOWN:
+            break;
+
+        case IDC_RADIO_CHANGE:
+            break;
+
+        case IDC_MENU_NEW:
+            break;
+
+        case IDC_MENU_OPEN:
+            break;
+
+        case IDC_MENU_SAVE:
+            break;
+        }
+    }
+
+
+    return FALSE;
 }
