@@ -13,13 +13,13 @@ Stage::Stage() : pFbx(), Width(20), Height(20)
             table[x][z].type = 0;
         }
     }
-    //table[0][0].height = 5;
-    //table[3][3].height = 2;
-    //table[10][1].height = 3;
+    table[0][0].height = 5;
+    table[3][3].height = 2;
+    table[10][1].height = 3;
 
-    //table[0][0].type = 1;
-    //table[3][3].type = 2;
-    //table[10][1].type = 3;
+    table[0][0].type = 1;
+    table[3][3].type = 2;
+    table[10][1].type = 3;
 
 }
 
@@ -52,7 +52,7 @@ void Stage::Update()
     ////あくまでFBXのレイキャストなので
     //pFbx[0]->RayCast(data, trans);
 
-    if (!Input::IsMouseButtonDown(0))
+    if (Input::IsMouseButtonDown(0))
     {
         float w = Direct3D::WINDOW_WIDTH / 2;
         float h = Direct3D::WINDOW_HEIGHT / 2;
@@ -95,8 +95,8 @@ void Stage::Update()
         vMouseBack = XMVector3TransformCoord(vMouseBack, invVP * invProj * invView);
 
         RayCastDeta data;
-        XMStoreFloat4(&data.start, vMouseFront);
-        XMStoreFloat4(&data.dir, vMouseBack - vMouseFront);
+        XMStoreFloat3(&data.start, vMouseFront);
+        XMStoreFloat3(&data.dir, vMouseBack - vMouseFront);
 
         Transform trans;
         pFbx[0]->RayCast(data, trans);
@@ -104,7 +104,6 @@ void Stage::Update()
         {
             PostQuitMessage(0);
         }
-
     }
 }
 

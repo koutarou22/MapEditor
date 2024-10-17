@@ -293,8 +293,8 @@ void FBX::RayCast(RayCastDeta& rayDate, Transform& transform)
 	transform.Calculation();
 	XMMATRIX invWorld = XMMatrixInverse(nullptr, transform.GetWorldMatrix());//逆行列
 
-	XMVECTOR start = XMLoadFloat4(&rayDate.start);
-	XMVECTOR dir = XMLoadFloat4(&rayDate.dir);
+	XMVECTOR start = XMLoadFloat3(&rayDate.start);
+	XMVECTOR dir = XMLoadFloat3(&rayDate.dir);
 	dir = XMVector3Normalize(dir);
 
 	XMVECTOR end = start + dir;//原点(ワールド)からstart+dir を足すことでend(終着点)を求めることができる
