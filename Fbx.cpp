@@ -292,6 +292,7 @@ void FBX::RayCast(RayCastDeta& rayDate, Transform& transform)
 {
 	transform.Calculation();
 	XMMATRIX invWorld = XMMatrixInverse(nullptr, transform.GetWorldMatrix());//ãtçsóÒ
+
 	XMVECTOR start = XMLoadFloat4(&rayDate.start);
 	XMVECTOR dir = XMLoadFloat4(&rayDate.dir);
 	dir = XMVector3Normalize(dir);

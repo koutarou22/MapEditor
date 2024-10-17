@@ -52,56 +52,59 @@ void Stage::Update()
     ////あくまでFBXのレイキャストなので
     //pFbx[0]->RayCast(data, trans);
 
-    if (Input::IsMouseButtonDown(0))
+    if (!Input::IsMouseButtonDown(0))
     {
+        float w = Direct3D::WINDOW_WIDTH / 2;
+        float h = Direct3D::WINDOW_HEIGHT / 2;
+        //Offsetx,y は0
+        //minZ =0 maxZ = 1
+
+        XMMATRIX vp =
+        {
+             w,  0,  0, 0,
+             0, -h,  0, 0,
+             0,  0,  1, 0,
+             w,  h,  0, 1
+        };
+
         //レイを飛ばす処理
         XMMATRIX matView = Camera::GetViewMatrix();//ビュー行列
         XMMATRIX matProj = Camera::GetProjectionMatrix();//プロジェクション行列
 
-        float w = Direct3D::WINDOW_WIDTH / 2;
-        float h = Direct3D::WINDOW_HEIGHT / 2;
-        XMMATRIX vp =//ビュー行列
-        {
-            w, 0, 0, 0,
-            0,-h, 0, 0,
-            0, 0, 1, 0,
-            0, 0, 0, 1
-        };
-
-        XMMATRIX invView = XMMatrixInverse(nullptr, matView);
-        XMMATRIX invProj = XMMatrixInverse(nullptr, matProj);
+        //ビューポート
         XMMATRIX invVP = XMMatrixInverse(nullptr, vp);
+        //プロジェクション変換
+        XMMATRIX invProj = XMMatrixInverse(nullptr, matProj);
+        //ビュー変換
+        XMMATRIX invView = XMMatrixInverse(nullptr, matView);
 
-        //////////////////////////////////////////////
-        XMFLOAT3 mousePos = Input::GetMousePosition();
-        mousePos.z = 0;
 
-        XMVECTOR mouseFrontPos = XMLoadFloat3(&mousePos);
-        //////////////////////////////////////////////
-
-        mousePos.z = 1;
-
-        XMVECTOR mouseBackPos = XMLoadFloat3(&mousePos);//カメラから見える範囲で一番後ろの面を取得
-        //ここで変換する(前)
-        mouseFrontPos = XMVector3TransformCoord(mouseFrontPos, invVP * invProj * invView);
-        //ここで行列をする(後)
-        mouseBackPos = XMVector3TransformCoord(mouseBackPos, invVP * invProj * invView);
+        XMFLOAT3 mousePosBack = Input::GetMousePosition();
+        mousePosBack.z = 0.0f;
+        XMFLOAT3 mousePosFront = Input::GetMousePosition();
+        mousePosFront.z = 1.0f;
+        //①　mousePosFrontをベクトルに変換
+        XMVECTOR vMouseFront = XMLoadFloat3(&mousePosBack); // カメラから見える範囲で一番後ろの面を取得
+         
+        //ここで変換する(前) 
+        // ①にinvVP、invPrj、invViewをかける
+        vMouseFront = XMVector3TransformCoord(vMouseFront, invVP * invProj * invView);
+        //③　mousePosBackをベクトルに変換
+        XMVECTOR vMouseBack = XMLoadFloat3(&mousePosFront);
+        //④　③にinvVP、invPrj、invViewをかける
+        vMouseBack = XMVector3TransformCoord(vMouseBack, invVP * invProj * invView);
 
         RayCastDeta data;
-        XMStoreFloat4(&data.start, mouseFrontPos);
-        XMStoreFloat4(&data.dir, mouseBackPos - mouseFrontPos);//向きの設定
-        data.dir = XMFLOAT4(0, -1, 0, 0);
+        XMStoreFloat4(&data.start, vMouseFront);
+        XMStoreFloat4(&data.dir, vMouseBack - vMouseFront);
 
         Transform trans;
-      /*  trans.position_.x = 1;*/
-
-        //あくまでFBXのレイキャストなので
         pFbx[0]->RayCast(data, trans);
-
-        if (data.hit == true)
+        if (data.hit == true) 
         {
             PostQuitMessage(0);
         }
+
     }
 }
 
