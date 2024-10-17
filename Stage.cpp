@@ -97,12 +97,29 @@ void Stage::Update()
         RayCastDeta data;
         XMStoreFloat3(&data.start, vMouseFront);
         XMStoreFloat3(&data.dir, vMouseBack - vMouseFront);
-
-        Transform trans;
-        pFbx[0]->RayCast(data, trans);
-        if (data.hit == true) 
+     
+        for (int x = 0; x < Width; x++)
         {
-            PostQuitMessage(0);
+            for (int z = 0; z < Height; z++)
+            {
+                for (int y = 0; y < table[x][z].height; y++)
+                {
+                    Transform trs;
+                    trs.position_.x = x;
+                    trs.position_.y = y;
+                    trs.position_.z = z;
+
+
+                    int type = table[x][z].type;
+                    pFbx[type]->RayCast(data, trs);
+                    if (data.hit == true)
+                    {
+                       // PostQuitMessage(0);
+                        table[x][z].height++;
+                        return;//‚²‚Ü‚©‚µ
+                    }
+                }
+            }
         }
     }
 }
