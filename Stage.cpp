@@ -200,11 +200,6 @@ BOOL Stage::DialogProc(HWND hDlg, UINT msg, WPARAM wp, LPARAM lp)
         SendMessage(GetDlgItem(hDlg, IDC_COMBO3), CB_ADDSTRING, 0, (LPARAM)L"êÖ");
         break;
 
-        //case WM_MOUSEMOVE:
-        //      Input::SetMousePosition(LOWORD(lp), HIWORD(lp));
-        //      PostQuitMessage(0);
-        //      return 0;
-
     case WM_COMMAND:
 
         switch (LOWORD(wp))
@@ -222,7 +217,9 @@ BOOL Stage::DialogProc(HWND hDlg, UINT msg, WPARAM wp, LPARAM lp)
             break;
         case IDC_COMBO3:
             SelectType = (int)SendMessage(GetDlgItem(hDlg, IDC_COMBO3), CB_GETCURSEL, 0, 0);
+            return TRUE;
             break;
+           
 
         case IDC_MENU_NEW:
             break;
