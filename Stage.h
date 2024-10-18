@@ -12,6 +12,9 @@ class Stage
         int type;
     };
     Deta table[20][20];
+
+    int SelectMode;//上げるのか下げるのか変えるのか？
+    int SelectType;//デフォルトなのか？草原なのか
 public:
     //コンストラクタ
     Stage();

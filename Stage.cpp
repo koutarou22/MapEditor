@@ -4,7 +4,7 @@
 #include"Direct3D.h"
 #include "resource.h"
 
-Stage::Stage() : pFbx(), Width(20), Height(20)
+Stage::Stage() : pFbx(), Width(20), Height(20),SelectMode(0),SelectType(0)
 {
     for (int x = 0; x < Width; x++)
     {
@@ -85,13 +85,13 @@ void Stage::Update()
         XMFLOAT3 mousePosFront = Input::GetMousePosition();
         mousePosFront.z = 1.0f;
         //①　mousePosFrontをベクトルに変換
-        XMVECTOR vMouseFront = XMLoadFloat3(&mousePosBack); // カメラから見える範囲で一番後ろの面を取得
+        XMVECTOR vMouseFront = XMLoadFloat3(&mousePosFront); // カメラから見える範囲で一番後ろの面を取得
          
         //ここで変換する(前) 
         // ①にinvVP、invPrj、invViewをかける
         vMouseFront = XMVector3TransformCoord(vMouseFront, invVP * invProj * invView);
         //③　mousePosBackをベクトルに変換
-        XMVECTOR vMouseBack = XMLoadFloat3(&mousePosFront);
+        XMVECTOR vMouseBack = XMLoadFloat3(&mousePosBack);
         //④　③にinvVP、invPrj、invViewをかける
         vMouseBack = XMVector3TransformCoord(vMouseBack, invVP * invProj * invView);
 
@@ -116,7 +116,35 @@ void Stage::Update()
                     if (data.hit == true)
                     {
                        // PostQuitMessage(0);
-                        table[x][z].height++;
+                        switch (SelectMode)
+                        {
+                        case 0:
+                            table[x][z].height++;
+                            break;
+                        case 1:
+                            if (table[x][y].height > 0)
+                            {
+                                table[x][z].height--;
+                            }
+                            break;
+                        case 2:
+                            table[x][y].type = SelectType;
+                            break;
+                        }
+
+                        //if (SelectMode == 0)
+                        //{
+                        //    table[x][z].height++;
+                        //}
+                        //else if (SelectMode == 1)
+                        //{
+                        //    table[x][z].height--;
+                        //}
+                        //else if (SelectMode == 2)
+                        //{
+                        //    table[x][y].type = SelectType;
+                        //}
+                              
                         return;//ごまかし
                     }
                 }
@@ -165,7 +193,6 @@ BOOL Stage::DialogProc(HWND hDlg, UINT msg, WPARAM wp, LPARAM lp)
     case WM_INITDIALOG:
         /*HWND h = GetDlgItem(hDlg, IDC_RADIO_UP);*/
         SendMessage(GetDlgItem(hDlg, IDC_RADIO_UP), BM_SETCHECK, BST_CHECKED, 0);
-
         SendMessage(GetDlgItem(hDlg, IDC_COMBO3), CB_ADDSTRING, 0, (LPARAM)L"デフォルト");
         SendMessage(GetDlgItem(hDlg, IDC_COMBO3), CB_ADDSTRING, 0, (LPARAM)L"レンガ");
         SendMessage(GetDlgItem(hDlg, IDC_COMBO3), CB_ADDSTRING, 0, (LPARAM)L"草");
@@ -179,15 +206,22 @@ BOOL Stage::DialogProc(HWND hDlg, UINT msg, WPARAM wp, LPARAM lp)
         //      return 0;
 
     case WM_COMMAND:
+
         switch (LOWORD(wp))
         {
         case IDC_RADIO_UP:
+            SelectMode = 0;
             break;
 
         case IDC_RADIO_DOWN:
+            SelectMode = 1;
             break;
 
         case IDC_RADIO_CHANGE:
+            SelectMode = 2;
+            break;
+        case IDC_COMBO3:
+            SelectType = (int)SendMessage(GetDlgItem(hDlg, IDC_COMBO3), CB_GETCURSEL, 0, 0);
             break;
 
         case IDC_MENU_NEW:
