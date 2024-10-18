@@ -122,13 +122,13 @@ void Stage::Update()
                             table[x][z].height++;
                             break;
                         case 1:
-                            if (table[x][y].height > 0)
+                            if (table[x][z].height > 0)
                             {
                                 table[x][z].height--;
                             }
                             break;
                         case 2:
-                            table[x][y].type = SelectType;
+                            table[x][z].type = SelectType;
                             break;
                         }
 
