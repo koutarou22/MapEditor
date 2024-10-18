@@ -122,7 +122,7 @@ void Stage::Update()
                             table[x][z].height++;
                             break;
                         case 1:
-                            if (table[x][z].height > 0)
+                            if (table[x][z].height > 1)
                             {
                                 table[x][z].height--;
                             }
@@ -198,6 +198,7 @@ BOOL Stage::DialogProc(HWND hDlg, UINT msg, WPARAM wp, LPARAM lp)
         SendMessage(GetDlgItem(hDlg, IDC_COMBO3), CB_ADDSTRING, 0, (LPARAM)L"ëê");
         SendMessage(GetDlgItem(hDlg, IDC_COMBO3), CB_ADDSTRING, 0, (LPARAM)L"çª");
         SendMessage(GetDlgItem(hDlg, IDC_COMBO3), CB_ADDSTRING, 0, (LPARAM)L"êÖ");
+        SendMessage(GetDlgItem(hDlg, IDC_COMBO3), CB_SETCURSEL, 0,0);
         break;
 
     case WM_COMMAND:
