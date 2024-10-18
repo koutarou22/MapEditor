@@ -132,19 +132,6 @@ void Stage::Update()
                             break;
                         }
 
-                        //if (SelectMode == 0)
-                        //{
-                        //    table[x][z].height++;
-                        //}
-                        //else if (SelectMode == 1)
-                        //{
-                        //    table[x][z].height--;
-                        //}
-                        //else if (SelectMode == 2)
-                        //{
-                        //    table[x][y].type = SelectType;
-                        //}
-                              
                         return;//‚²‚Ü‚©‚µ
                     }
                 }
