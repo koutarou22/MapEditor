@@ -205,7 +205,6 @@ BOOL Stage::DialogProc(HWND hDlg, UINT msg, WPARAM wp, LPARAM lp)
             break;
         case IDC_COMBO3:
             SelectType = (int)SendMessage(GetDlgItem(hDlg, IDC_COMBO3), CB_GETCURSEL, 0, 0);
-            return TRUE;
             break;
            
 
