@@ -147,19 +147,7 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInst, LPSTR lpCmdLine, 
 //ウィンドウプロシージャ（何かあった時によばれる関数）
 LRESULT CALLBACK WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
-    switch (msg)
-    {
-    case WM_DESTROY:
-
-        PostQuitMessage(0);  //プログラム終了
-        return 0;
-
-    case WM_MOUSEMOVE:
-        Input::SetMousePosition(LOWORD(lParam), HIWORD(lParam));
-        return 0;
- 
-    }
-    return DefWindowProc(hWnd, msg, wParam, lParam);
+    return pStage->WndProc(hWnd, msg, wParam, lParam);//偽物のwindowプロシージャ
 }
 
 //ダイアログプロシージャ
