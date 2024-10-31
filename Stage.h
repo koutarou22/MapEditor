@@ -12,6 +12,8 @@ class Stage
         int type;
     };
     Deta table[20][20];
+   // std::vector<std::vector<Deta>> table;
+
 
     int SelectMode;//上げるのか下げるのか変えるのか？
     int SelectType;//デフォルトなのか？草原なのか

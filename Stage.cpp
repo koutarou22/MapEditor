@@ -21,7 +21,6 @@ Stage::Stage() : pFbx(), Width(20), Height(20),SelectMode(0),SelectType(0)
     table[0][0].type = 1;
     table[3][3].type = 2;
     table[10][1].type = 3;
-
 }
 
 Stage::~Stage()
