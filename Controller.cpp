@@ -43,17 +43,17 @@ void Controller::Update()
 	}
 
 	//Camera Limit Range
-	if (transform.position_.x < 0)
+	if (transform.position_.x < 4)
 	{
-		transform.position_.x = 0;
+		transform.position_.x = 4;
 	}
-	if (transform.position_.x > 20)
+	if (transform.position_.x > 15)
 	{
-		transform.position_.x = 20;
+		transform.position_.x = 15;
 	}
-	if (transform.position_.z < 0)
+	if (transform.position_.z < 2)
 	{
-		transform.position_.z = 0;
+		transform.position_.z = 2;
 	}
 	if (transform.position_.z > 10)
 	{
@@ -66,8 +66,6 @@ void Controller::Update()
 	Camera::SetPosition(CamPos);
 	Camera::SetTarget(POS_);
 }
-
-
 
 void Controller::Draw()
 {
