@@ -3,6 +3,7 @@
 #include"Camera.h"
 #include"Direct3D.h"
 #include "resource.h"
+#include <iostream>
 
 Stage::Stage() : pFbx(), Width(20), Height(20),SelectMode(0),SelectType(0)
 {
