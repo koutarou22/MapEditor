@@ -5,6 +5,8 @@
 #include "resource.h"
 #include <iostream>
 
+using std::string;
+
 Stage::Stage() : pFbx(), Width(20), Height(20),SelectMode(0),SelectType(0)
 {
     for (int x = 0; x < Width; x++)
@@ -171,6 +173,7 @@ void Stage::Release()
     }
 }
 
+
 void Stage::Save()
 {
  /*   string s = "";
@@ -226,16 +229,28 @@ void Stage::Save()
     
       //２.ノートに書き込む(イメージ)
       DWORD dwBytes = 0;       //書き込み位置
+      //☆ここに追加していく
+      string MapData = "";
+      for (int x = 0; x < Width; x++)
+      {
+          for (int z = 0; z < Height; z++)
+          {
+              MapData += table[x][z].height + ",";
+              MapData += table[x][z].type + ",";
+          }
+      }
+
       WriteFile(
-      hFile,                   //ファイルハンドル
-      "ABCD",                  //保存するデータ（文字列）
-      (DWORD)4,                //書き込む文字数
+      MapData.c_str(),                   //ファイルハンドル
+      MapData.size(),                  //保存するデータ（文字列）
+      (DWORD)4,                      //書き込む文字数
       &dwBytes,                //書き込んだサイズを入れる変数
       NULL);                   //オーバーラップド構造体（今回は使わない）
      
       //３.本棚に戻す しっかり見てる本(text)を閉じること(イメージ)
       CloseHandle(hFile);
 }
+
 
 void Stage::Open()
 {
@@ -266,6 +281,8 @@ void Stage::Open()
         NULL);     //オーバーラップド構造体（今回は使わない）
 
     CloseHandle(hFile);//しっかり閉じる(大事)
+
+    //☆ここを追加
 
 }
 
