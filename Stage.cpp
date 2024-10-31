@@ -172,6 +172,24 @@ void Stage::Release()
 
 void Stage::Save()
 {
+ /*   string s = "";
+    s += "" + table[0][0].height;
+    s += ",";
+    s += "" + table[0][0].height;
+    s += ",";
+    s += "" + table[0][0].height;
+    s += ",";
+    s += "" + table[0][0].height;
+    s += ",";
+    s += "" + table[0][0].height;
+    s += ",";*/
+
+   // ///////////////////////////////////////
+   // char d[256];
+   // sprintf(d, "%d", table[0][0].height);
+   /////////////////////////////////////////
+  
+
     //ワイド文字列にすれば解決
     WCHAR fileName[MAX_PATH] = L"無題.map";  //ファイル名を入れる変数
 

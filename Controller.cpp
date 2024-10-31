@@ -23,6 +23,7 @@ void Controller::Update()
 	if (Input::IsKey(DIK_D))
 	{
 		transform.position_.x += 0.02;
+
 		//target.x += 0.2;
 	}
 	if (Input::IsKey(DIK_A))
@@ -40,6 +41,25 @@ void Controller::Update()
 		transform.position_.z -= 0.02;
 		//target.z += 0.02;
 	}
+
+	//Camera Limit Range
+	if (transform.position_.x < 0)
+	{
+		transform.position_.x = 0;
+	}
+	if (transform.position_.x > 20)
+	{
+		transform.position_.x = 20;
+	}
+	if (transform.position_.z < 0)
+	{
+		transform.position_.z = 0;
+	}
+	if (transform.position_.z > 10)
+	{
+		transform.position_.z = 10;
+	}
+
 	XMVECTOR POS_ = XMLoadFloat3(&transform.position_);//transformÅ@ÇÕxmfloatå^Ç©ÇÁXMVECTORÇ…ïœä∑ÇµÇΩ
     XMVECTOR target =XMVectorSet (0, 7.0,-10.0,0 );
     XMVECTOR CamPos = POS_ + target;
