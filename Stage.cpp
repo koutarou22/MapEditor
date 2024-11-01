@@ -329,7 +329,7 @@ void Stage::Open()
 
                 next = data.find(',', pos);
 
-                table[x][z].type = std::stoi(data.substr(pos, next));
+                table[x][z].type = std::stoi(data.substr(pos, next - pos));
 
                 pos = next + 1;
 
