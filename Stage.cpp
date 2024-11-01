@@ -17,13 +17,13 @@ Stage::Stage() : pFbx(), Width(20), Height(20),SelectMode(0),SelectType(0)
             table[x][z].type = 0;
         }
     }
-    table[0][0].height = 5;
+ /*   table[0][0].height = 5;
     table[3][3].height = 2;
     table[10][1].height = 3;
 
     table[0][0].type = 1;
     table[3][3].type = 2;
-    table[10][1].type = 3;
+    table[10][1].type = 3;*/
 }
 
 Stage::~Stage()
@@ -134,7 +134,7 @@ void Stage::Update()
                             break;
                         }
 
-                        return;//ごまかし
+                        return;
                     }
                 }
             }
@@ -161,7 +161,6 @@ void Stage::Draw()
             }
         }
     }
-
 }
 
 void Stage::Release()
@@ -172,7 +171,6 @@ void Stage::Release()
         SAFE_DELETE(pFbx[i]);
     }
 }
-
 
 void Stage::Save()
 {
@@ -194,18 +192,18 @@ void Stage::Save()
    /////////////////////////////////////////
 
     //ワイド文字列にすれば解決
-    WCHAR fileName[MAX_PATH] = L"無題.map";  //ファイル名を入れる変数
+    WCHAR fileName[MAX_PATH] = L"無題.txt";  //ファイル名を入れる変数
 
     //「ファイルを保存」ダイアログの設定
     OPENFILENAME ofn;                         	//名前をつけて保存ダイアログの設定用構造体
     ZeroMemory(&ofn, sizeof(ofn));            	//構造体初期化
     ofn.lStructSize = sizeof(OPENFILENAME);   	//構造体のサイズ
-    ofn.lpstrFilter = TEXT("マップデータ(*.map)\0*.map\0")                         //─┬ファイルの種類を選ぶときに出てくるやつ
+    ofn.lpstrFilter = TEXT("マップデータ(*.txt)\0*.txt\0")                         //─┬ファイルの種類を選ぶときに出てくるやつ
                       TEXT("すべてのファイル(*.*)\0*.*\0\0");//一番下は\0が二つ     //─┘※拡張子を変えても中身(.txt)は変わらないよ！
     ofn.lpstrFile = fileName;               	//ファイル名
     ofn.nMaxFile = MAX_PATH;               	    //パスの最大文字数// windowさんから260文字分用意されている
     ofn.Flags = OFN_OVERWRITEPROMPT;   		    //フラグ（同名ファイルが存在したら上書き確認）
-    ofn.lpstrDefExt = L"map";                  	//デフォルト拡張子
+    ofn.lpstrDefExt = L"txt";                  	//デフォルト拡張子
 
     //「ファイルを保存」ダイアログ
     BOOL selFile;
@@ -213,6 +211,7 @@ void Stage::Save()
 
     //キャンセルしたら中断
     if (selFile == FALSE) return;//もしキャンセルが押されたら
+
 
 
       //１.まっさらなノートを持ってくる(イメージ)
@@ -228,22 +227,23 @@ void Stage::Save()
       NULL);                   //拡張属性（なし）
     
       //２.ノートに書き込む(イメージ)
-      DWORD dwBytes = 0;       //書き込み位置
-      //☆ここに追加していく
+      DWORD dwBytes = 0; //書き込み位置
+
+      //☆ここにMapの情報を追加していく
       string MapData = "";
       for (int x = 0; x < Width; x++)
       {
           for (int z = 0; z < Height; z++)
           {
-              MapData += table[x][z].height + ",";
-              MapData += table[x][z].type + ",";
+              MapData += std::to_string(table[x][z].height) + ",";
+              MapData += std::to_string(table[x][z].type)   + ",";
           }
       }
 
       WriteFile(
-      MapData.c_str(),                   //ファイルハンドル
-      MapData.size(),                  //保存するデータ（文字列）
-      (DWORD)4,                      //書き込む文字数
+      hFile,                   //ファイルハンドル
+      MapData.c_str(),         //保存するデータ（文字列）
+      MapData.size(),          //書き込む文字数
       &dwBytes,                //書き込んだサイズを入れる変数
       NULL);                   //オーバーラップド構造体（今回は使わない）
      
@@ -254,6 +254,31 @@ void Stage::Save()
 
 void Stage::Open()
 {
+    ///
+    //やってることはSave()とほぼ同じ
+    ///
+    WCHAR fileName[MAX_PATH] = L"無題.txt";  //ファイル名を入れる変数
+
+    //「ファイルを保存」ダイアログの設定
+    OPENFILENAME ofn;                         	//名前をつけて保存ダイアログの設定用構造体
+    ZeroMemory(&ofn, sizeof(ofn));            	//構造体初期化
+    ofn.lStructSize = sizeof(OPENFILENAME);   	//構造体のサイズ
+    ofn.lpstrFilter = TEXT("マップデータ(*.txt)\0*.txt\0")                         //─┬ファイルの種類を選ぶときに出てくるやつ
+                      TEXT("すべてのファイル(*.*)\0*.*\0\0");//一番下は\0が二つ     //─┘※拡張子を変えても中身(.txt)は変わらないよ！
+    ofn.lpstrFile = fileName;               	//ファイル名
+    ofn.nMaxFile = MAX_PATH;               	    //パスの最大文字数// windowさんから260文字分用意されている
+    ofn.Flags = OFN_FILEMUSTEXIST;   		    //フラグ（同名ファイルが存在したら上書き確認）
+    ofn.lpstrDefExt = L"txt";                  	//デフォルト拡張子
+
+    //「ファイルを開く」ダイアログ
+    BOOL selFile;
+    selFile = GetOpenFileName(&ofn);//名前を付けて保存の画面を出す関数
+
+    //キャンセルしたら中断
+    if (selFile == FALSE) return;//もしキャンセルが押されたら
+
+
+
     HANDLE hFile;              //ファイルのハンドル
     hFile = CreateFile(
     L"Stage.txt",              //ファイル名
@@ -268,14 +293,14 @@ void Stage::Open()
     DWORD fileSize = GetFileSize(hFile, NULL);//hFileが何バイトなのかを調べてくれる
 
     //ファイルのサイズ分メモリを確保
-    char* data;//現在ポインタにしているため先頭の文字しか表示されない(配列なら見れる)
-    data = new char[fileSize];
+    char* MapData;//現在ポインタにしているため先頭の文字しか表示されない(配列なら見れる)
+    MapData = new char[fileSize];
 
     DWORD dwBytes = 0; //読み込み位置　あんま関係ないけどないとエラーが起きるんだそう
 
     ReadFile(
         hFile,     //ファイルハンドル
-        data,      //データを入れる変数
+        MapData,      //データを入れる変数
         fileSize,  //読み込むサイズ
         &dwBytes,  //読み込んだサイズ
         NULL);     //オーバーラップド構造体（今回は使わない）
@@ -283,7 +308,35 @@ void Stage::Open()
     CloseHandle(hFile);//しっかり閉じる(大事)
 
     //☆ここを追加
+    string data(MapData);//Charをstringに変換
 
+    size_t pos = 0;
+    
+    //こっちでは情報を探す
+    if (!data.empty())
+    {
+        for (int x = 0; x < Width; x++)
+        {
+            for (int z = 0; z < Height; z++)
+            {
+                //findで,の位置を探す
+                size_t next = data.find(',', pos);//次のposから始まるコンマの位置を探す
+              
+                //ここでint型に変換しないと怒られるので『stoi』を使って変換
+                table[x][z].height = std::stoi(data.substr(pos,next - pos));//『substr』で特定の文字の場所を特定する
+
+                pos = next + 1;//次のdataに向かう
+
+                next = data.find(',', pos);
+
+                table[x][z].type = std::stoi(data.substr(pos, next));
+
+                pos = next + 1;
+
+            }
+        }
+    }
+ 
 }
 
 //ウィンドウプロシージャの偽物さん
@@ -357,7 +410,6 @@ BOOL Stage::DialogProc(HWND hDlg, UINT msg, WPARAM wp, LPARAM lp)
             break;
         }
     }
-
 
     return FALSE;
 }
